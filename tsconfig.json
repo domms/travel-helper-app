@@ -1,6 +1,12 @@
 {
   "extends": "expo/tsconfig.base",
+  "exclude": ["functions", "functions/**"],
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "noUnusedLocals": false,
+    "typeRoots": ["./node_modules/@types", "./@types"],
+    "module": "esnext",
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
+  },
 }

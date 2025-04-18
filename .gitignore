@@ -5,7 +5,11 @@ node_modules/
 
 # Expo
 .expo/
+.expo-shared
 dist/
+.DS_Store
+npm-debug.log
+*.log
 web-build/
 expo-env.d.ts
 
