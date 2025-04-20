@@ -15,8 +15,9 @@ import { getDistance } from 'geolib';
 import { getWifiSpotIcon } from '../utils/getWifiSpotIcon';
 import { useUserLocation } from '../hooks/useUserLocation';
 import MapMarkerIcon from '../components/MapMarkerIcon';
-import { fetchWifiSpots } from '../services/overpass';
+import { fetchWifiSpots } from '../../services/overpass';
 import { Ionicons } from '@expo/vector-icons';
+import AuthenticatedLayout from '../layout/AuthenticatedLayout';
 
 interface WifiSpot {
   id: string;
@@ -137,94 +138,96 @@ export default function WifiFinderMapScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <MapView
-        ref={mapRef}
-        style={{ flex: 1 }}
-        showsUserLocation
-        initialRegion={{
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }}
-      >
-        {spots.map((spot) => {
-          /* ---------- category helpers ---------- */
-          const amenity =
-            spot.tags?.amenity === 'cafe'
-              ? 'Café'
-              : spot.tags?.amenity === 'restaurant'
-                ? 'Restaurant'
-                : spot.tags?.amenity === 'fast_food'
-                  ? 'Fast Food'
-                  : spot.tags?.amenity === 'library'
-                    ? 'Library'
-                    : 'Wi‑Fi Spot';
-
-          const icon = getWifiSpotIcon(spot.tags);
-          const backgroundColor =
-            spot.tags?.amenity === 'cafe'
-              ? '#3B82F6'
-              : spot.tags?.amenity === 'fast_food'
-                ? '#EF4444'
+    <AuthenticatedLayout>
+      <View style={{ flex: 1 }}>
+        <MapView
+          ref={mapRef}
+          style={{ flex: 1 }}
+          showsUserLocation
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        >
+          {spots.map((spot) => {
+            /* ---------- category helpers ---------- */
+            const amenity =
+              spot.tags?.amenity === 'cafe'
+                ? 'Café'
                 : spot.tags?.amenity === 'restaurant'
+                  ? 'Restaurant'
+                  : spot.tags?.amenity === 'fast_food'
+                    ? 'Fast Food'
+                    : spot.tags?.amenity === 'library'
+                      ? 'Library'
+                      : 'Wi‑Fi Spot';
+
+            const icon = getWifiSpotIcon(spot.tags);
+            const backgroundColor =
+              spot.tags?.amenity === 'cafe'
+                ? '#3B82F6'
+                : spot.tags?.amenity === 'fast_food'
                   ? '#EF4444'
-                  : spot.tags?.amenity === 'library'
-                    ? '#10B981'
-                    : '#6B7280';
+                  : spot.tags?.amenity === 'restaurant'
+                    ? '#EF4444'
+                    : spot.tags?.amenity === 'library'
+                      ? '#10B981'
+                      : '#6B7280';
 
-          /* ---------- marker ---------- */
-          return (
-            <Marker
-              key={spot.id}
-              coordinate={{ latitude: spot.lat, longitude: spot.lon }}
-              title={`📍${spot.name}`}
-              description={`${amenity} • ${spot.address} ➜`}
-              onCalloutPress={() => openNativeNavigation(spot.lat, spot.lon)}
-            >
-              <MapMarkerIcon
-                name={icon.name}
-                library={icon.library}
-                backgroundColor={backgroundColor}
-              />
-            </Marker>
-          );
-        })}
-      </MapView>
+            /* ---------- marker ---------- */
+            return (
+              <Marker
+                key={spot.id}
+                coordinate={{ latitude: spot.lat, longitude: spot.lon }}
+                title={`📍${spot.name}`}
+                description={`${amenity} • ${spot.address} ➜`}
+                onCalloutPress={() => openNativeNavigation(spot.lat, spot.lon)}
+              >
+                <MapMarkerIcon
+                  name={icon.name}
+                  library={icon.library}
+                  backgroundColor={backgroundColor}
+                />
+              </Marker>
+            );
+          })}
+        </MapView>
 
-      {/* bottom list */}
-      <View
-        style={[
-          styles.sheet,
-          { height: expanded ? '70%' : '45%' }, // toggle height
-        ]}
-      >
-        {/* handle bar */}
-        <View style={{ alignItems: 'center', paddingVertical: 4 }}>
-          <TouchableOpacity
-            onPress={() => setExpanded(!expanded)}
-            style={{
-              width: 40,
-              height: 4,
-              borderRadius: 2,
-              backgroundColor: '#D1D5DB',
-              transform: [{ rotate: expanded ? '180deg' : '0deg' }],
-            }}
+        {/* bottom list */}
+        <View
+          style={[
+            styles.sheet,
+            { height: expanded ? '70%' : '40%' }, // toggle height
+          ]}
+        >
+          {/* handle bar */}
+          <View style={{ alignItems: 'center', paddingVertical: 4 }}>
+            <TouchableOpacity
+              onPress={() => setExpanded(!expanded)}
+              style={{
+                width: 40,
+                height: 4,
+                borderRadius: 2,
+                backgroundColor: '#D1D5DB',
+                transform: [{ rotate: expanded ? '180deg' : '0deg' }],
+              }}
+            />
+          </View>
+
+          {/* nearby‑spots list */}
+          <FlatList
+            data={spots}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            ItemSeparatorComponent={() => <View style={styles.sep} />}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 12, paddingTop: 4 }}
           />
         </View>
-
-        {/* nearby‑spots list */}
-        <FlatList
-          data={spots}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          ItemSeparatorComponent={() => <View style={styles.sep} />}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 12, paddingTop: 4 }}
-        />
       </View>
-    </View>
+    </AuthenticatedLayout>
   );
 }
 

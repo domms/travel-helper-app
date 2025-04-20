@@ -1,14 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import './styles/tailwind.css';
-import { RootStackParamList } from './src/types/navigation';
-import React from 'react';
+import React, { useState } from 'react';
+import { AuthProvider } from './src/context/AuthContext';
 import StackNavigator from './src/navigation/StackNavigator';
+import { StatusBar } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
+import CoverScreen from './src/screens/CoverScreen';
 
 export default function App() {
-  return <StackNavigator />;
+  const [showCover, setShowCover] = useState(true);
+  return (
+    <PaperProvider>
+      <AuthProvider>
+        <StatusBar
+          barStyle="dark-content"
+          translucent
+          backgroundColor="white"
+        />
+        {showCover ? (
+          <CoverScreen onFinish={() => setShowCover(false)} />
+        ) : (
+          <StackNavigator />
+        )}
+      </AuthProvider>
+    </PaperProvider>
+  );
 }
 
 const styles = StyleSheet.create({

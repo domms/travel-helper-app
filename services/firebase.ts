@@ -6,6 +6,8 @@ import {
   FIREBASE_PROJECT_ID,
   FIREBASE_APP_ID,
   FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_STORAGE_BUCKET,
 } from '@env';
 
 const firebaseConfig = {
@@ -13,10 +15,10 @@ const firebaseConfig = {
   projectId: FIREBASE_PROJECT_ID,
   appId: FIREBASE_APP_ID,
   messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  // Add other required fields if needed (e.g., authDomain, storageBucket)
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
 };
 
 const app = initializeApp(firebaseConfig);
-
 export const db = getFirestore(app);
 export const auth = getAuth(app);

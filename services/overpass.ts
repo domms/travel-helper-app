@@ -1,4 +1,4 @@
-import { formatAddress } from '../utils/formatAddress'; // adjust path as needed
+import { formatAddress } from '../src/utils/formatAddress'; // adjust path as needed
 
 const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 
